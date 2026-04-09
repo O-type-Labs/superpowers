@@ -89,6 +89,37 @@ You: [Fix progress indicators]
 - Review before merge
 - Review when stuck
 
+### gstack structural review (optional)
+
+If `gstack-review` appears in the available skill list:
+
+After the superpowers code-reviewer subagent completes (spec compliance + code quality review), invoke `gstack-review` for structural diff analysis. It checks concerns the superpowers reviewer doesn't cover:
+- SQL safety (injection risks, migration issues)
+- LLM trust boundary violations (untrusted input flowing into prompts)
+- Conditional side effects (actions that only trigger under specific conditions)
+- Structural issues (circular deps, import violations)
+
+Combine findings from both reviews before presenting to the user.
+
+**Fallback** (if gstack not available): Only the superpowers code-reviewer runs.
+
+### gstack-codex adversarial review (optional)
+
+If `gstack-codex` appears in the available skill list, offer an independent AI review for critical changes (5+ files, or changes touching auth/data/financial paths):
+
+> "An independent Codex review is available (uses GPT, catches blind spots
+> Claude might share across all review stages).
+>
+> A) Codex review — independent structural review
+> B) Codex challenge — adversarial mode, tries to break your code
+> C) Skip"
+
+If A: invoke `gstack-codex` in review mode.
+If B: invoke `gstack-codex` in challenge mode.
+Incorporate findings before presenting combined review to user.
+
+**Fallback** (if gstack or codex CLI not available): Skip. Two reviews (superpowers + gstack-review) are sufficient.
+
 ## Red Flags
 
 **Never:**
