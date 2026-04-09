@@ -103,6 +103,23 @@ git commit -m "feat: add specific feature"
 ```
 ````
 
+**Frontend tasks — gstack QA (optional):** If the task modifies files in a frontend directory (e.g., `apps/web/`, `src/components/`, `src/pages/`) AND `gstack-qa-only` appears in the available skill list, add a browser QA step after the test step:
+
+````markdown
+- [ ] **Step N: Browser QA verification**
+  Invoke `gstack-qa-only` on the affected page/journey. Capture before/after
+  screenshots. Verify: no visual regressions, interactive elements respond,
+  responsive layout intact.
+````
+
+**Fallback** (if gstack not available): Replace with:
+
+````markdown
+- [ ] **Step N: Manual verification**
+  Run the test suite. Open the app, navigate to the affected page,
+  verify the change visually.
+````
+
 ## No Placeholders
 
 Every step must contain the actual content an engineer needs. These are **plan failures** — never write them:
@@ -130,6 +147,20 @@ After writing the complete plan, look at the spec with fresh eyes and check the 
 **3. Type consistency:** Do the types, method signatures, and property names you used in later tasks match what you defined in earlier tasks? A function called `clearLayers()` in Task 3 but `clearFullLayers()` in Task 7 is a bug.
 
 If you find issues, fix them inline. No need to re-review — just fix and move on. If you find a spec requirement with no task, add the task.
+
+## gstack Engineering Review (optional)
+
+If `gstack-plan-eng-review` appears in the available skill list, offer an architecture review after the self-review pass:
+
+> "Implementation plan is ready. An engineering review is available to challenge
+> the architecture, edge cases, and test coverage before execution.
+>
+> A) Run eng review (recommended for 5+ tasks or architectural changes)
+> B) Skip — proceed to execution"
+
+If A: invoke `gstack-plan-eng-review` on the implementation plan. Incorporate findings: update tasks, add edge case handling, adjust architecture. Re-run self-review after changes.
+
+**Fallback** (if gstack not available): Skip. Present plan to user directly.
 
 ## Execution Handoff
 
