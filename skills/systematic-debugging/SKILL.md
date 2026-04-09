@@ -63,6 +63,17 @@ You MUST complete each phase before proceeding to the next.
    - Does it happen every time?
    - If not reproducible → gather more data, don't guess
 
+**UI bug reproduction with gstack-browse** (optional — if `gstack-browse` appears in the available skill list AND the bug is UI-related):
+
+1. Navigate to the affected page with `gstack-browse`
+2. Take a screenshot capturing the broken state
+3. Record console errors via the browser snapshot
+4. Use this screenshot + errors as the baseline for hypothesis testing
+
+This provides concrete visual evidence instead of relying on user descriptions.
+
+**Fallback** (if gstack not available): Reproduce via user description + reading code + checking logs.
+
 3. **Check Recent Changes**
    - What changed that could cause this?
    - Git diff, recent commits
@@ -188,6 +199,13 @@ You MUST complete each phase before proceeding to the next.
    - Test passes now?
    - No other tests broken?
    - Issue actually resolved?
+
+**UI fix verification with gstack-browse** (optional — if used in Phase 1):
+
+1. Navigate to the same page as the Phase 1 reproduction
+2. Take a screenshot capturing the fixed state
+3. Diff before/after screenshots as evidence the fix works
+4. Include both screenshots in the completion report
 
 4. **If Fix Doesn't Work**
    - STOP
