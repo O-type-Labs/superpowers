@@ -37,6 +37,25 @@ BEFORE claiming any status or expressing satisfaction:
 Skip any step = lying, not verifying
 ```
 
+### gstack verification gates (optional)
+
+These additional gates run only when the relevant gstack skill is available AND the change touches the relevant domain.
+
+**Security gate** (if `gstack-cso` appears in the available skill list):
+If the change touches auth, encryption, API keys, financial data access, or trust boundaries:
+- Invoke `gstack-cso` in daily mode (8/10 confidence bar)
+- If findings are critical or high severity: STOP — do not claim completion until addressed
+- If findings are medium or lower: note them but proceed
+
+**Visual QA gate** (if `gstack-design-review` appears in the available skill list):
+If the change modifies frontend/UI files:
+- Invoke `gstack-design-review` on the affected pages
+- Check for: visual inconsistency, spacing issues, hierarchy problems, AI slop patterns
+- If issues at critical/high severity: STOP — fix before claiming completion
+- If issues are cosmetic: note them but proceed
+
+**Fallback** (if gstack not available): No automated security or visual checks. Rely on code review and manual inspection.
+
 ## Common Failures
 
 | Claim | Requires | Not Sufficient |
@@ -48,6 +67,8 @@ Skip any step = lying, not verifying
 | Regression test works | Red-green cycle verified | Test passes once |
 | Agent completed | VCS diff shows changes | Agent reports "success" |
 | Requirements met | Line-by-line checklist | Tests passing |
+| Security-safe | CSO audit: 0 critical/high | "I checked the code" |
+| UI correct | Design review: 0 critical/high | "It looks fine to me" |
 
 ## Red Flags - STOP
 
