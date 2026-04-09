@@ -21,33 +21,54 @@ Every project goes through this process. A todo list, a single-function utility,
 
 You MUST create a task for each of these items and complete them in order:
 
-1. **Explore project context** — check files, docs, recent commits
-2. **Offer visual companion** (if topic will involve visual questions) — this is its own message, not combined with a clarifying question. See the Visual Companion section below.
-3. **Ask clarifying questions** — one at a time, understand purpose/constraints/success criteria
-4. **Propose 2-3 approaches** — with trade-offs and your recommendation
-5. **Present design** — in sections scaled to their complexity, get user approval after each section
-6. **Write design doc** — save to `docs/superpowers/specs/YYYY-MM-DD-<topic>-design.md` and commit
-7. **Spec self-review** — quick inline check for placeholders, contradictions, ambiguity, scope (see below)
-8. **User reviews written spec** — ask user to review the spec file before proceeding
-9. **Transition to implementation** — invoke writing-plans skill to create implementation plan
+1. **Research context** — invoke `research-context` skill. This runs an autonomous codebase scan, tracks 10 context dimensions with a visual gap dashboard, and gates on ≥80% coverage before proceeding. If user says "skip research", go to step 2.
+2. **Explore project context** — check files, docs, recent commits. If step 1 ran, this step is lighter: CONTEXT.md already covers Technical Landscape + Prior Art. Focus on anything the research step flagged as needing human input.
+3. **Offer visual companion** (if topic will involve visual questions) — this is its own message, not combined with a clarifying question. See the Visual Companion section below.
+4. **Ask clarifying questions** — one at a time, understand purpose/constraints/success criteria. If step 1 ran, fewer questions are needed — focus on dimensions that scored below 80%.
+5. **Propose 2-3 approaches** — with trade-offs and your recommendation
+6. **Present design** — in sections scaled to their complexity, get user approval after each section
+7. **gstack plan reviews** (optional — if any `gstack-plan-*` or `gstack-autoplan` skills appear in the available skill list):
+   After the user approves the design, offer gstack's specialized plan reviewers before writing the spec. Only offer for non-trivial work (3+ files or architectural decisions). For trivial changes, skip silently.
+
+   > "Before I write the spec, gstack plan reviews are available:
+   >
+   > A) CEO review — challenge problem framing, find the 10-star product
+   > B) Eng review — challenge architecture, edge cases, test coverage
+   > C) Design review — challenge visual/UX intent, catch AI slop
+   > D) DX review — challenge developer experience, API surface
+   > E) Autoplan — run all 4 in sequence (recommended for big changes)
+   > F) Skip — write the spec now"
+
+   If the user picks A-E, invoke the corresponding gstack skill (`gstack-plan-ceo-review`, `gstack-plan-eng-review`, `gstack-plan-design-review`, `gstack-plan-devex-review`, or `gstack-autoplan`). Incorporate findings into the design before proceeding to write the spec.
+   **Fallback** (if gstack not available): Skip this step. Proceed from step 6 to step 8 (write design doc).
+8. **Write design doc** — save to `docs/superpowers/specs/YYYY-MM-DD-<topic>-design.md` and commit
+9. **Spec self-review** — quick inline check for placeholders, contradictions, ambiguity, scope (see below)
+10. **User reviews written spec** — ask user to review the spec file before proceeding
+11. **Transition to implementation** — invoke writing-plans skill to create implementation plan
 
 ## Process Flow
 
 ```dot
 digraph brainstorming {
-    "Explore project context" [shape=box];
+    "Invoke research-context skill\n(autonomous scan + gap dashboard)" [shape=box];
+    "Coverage >= 80%?" [shape=diamond];
+    "Explore project context\n(lighter if research ran)" [shape=box];
     "Visual questions ahead?" [shape=diamond];
     "Offer Visual Companion\n(own message, no other content)" [shape=box];
     "Ask clarifying questions" [shape=box];
     "Propose 2-3 approaches" [shape=box];
     "Present design sections" [shape=box];
     "User approves design?" [shape=diamond];
+    "gstack plan reviews?\n(optional)" [shape=diamond];
     "Write design doc" [shape=box];
     "Spec self-review\n(fix inline)" [shape=box];
     "User reviews spec?" [shape=diamond];
     "Invoke writing-plans skill" [shape=doublecircle];
 
-    "Explore project context" -> "Visual questions ahead?";
+    "Invoke research-context skill\n(autonomous scan + gap dashboard)" -> "Coverage >= 80%?";
+    "Coverage >= 80%?" -> "Explore project context\n(lighter if research ran)" [label="yes, or user says skip"];
+    "Coverage >= 80%?" -> "Invoke research-context skill\n(autonomous scan + gap dashboard)" [label="no, keep researching"];
+    "Explore project context\n(lighter if research ran)" -> "Visual questions ahead?";
     "Visual questions ahead?" -> "Offer Visual Companion\n(own message, no other content)" [label="yes"];
     "Visual questions ahead?" -> "Ask clarifying questions" [label="no"];
     "Offer Visual Companion\n(own message, no other content)" -> "Ask clarifying questions";
@@ -55,7 +76,8 @@ digraph brainstorming {
     "Propose 2-3 approaches" -> "Present design sections";
     "Present design sections" -> "User approves design?";
     "User approves design?" -> "Present design sections" [label="no, revise"];
-    "User approves design?" -> "Write design doc" [label="yes"];
+    "User approves design?" -> "gstack plan reviews?\n(optional)" [label="yes"];
+    "gstack plan reviews?\n(optional)" -> "Write design doc" [label="skip or done"];
     "Write design doc" -> "Spec self-review\n(fix inline)";
     "Spec self-review\n(fix inline)" -> "User reviews spec?";
     "User reviews spec?" -> "Write design doc" [label="changes requested"];
@@ -69,7 +91,8 @@ digraph brainstorming {
 
 **Understanding the idea:**
 
-- Check out the current project state first (files, docs, recent commits)
+- **If research-context ran (step 1):** Read the CONTEXT.md it produced. Use it to pre-fill your understanding of the technical landscape, prior art, constraints, and edge cases. Skip questions for dimensions already at ≥80%. Focus your clarifying questions on dimensions the research step flagged as needing human input.
+- **If research was skipped:** Check out the current project state first (files, docs, recent commits).
 - Before asking detailed questions, assess scope: if the request describes multiple independent subsystems (e.g., "build a platform with chat, file storage, billing, and analytics"), flag this immediately. Don't spend questions refining details of a project that needs to be decomposed first.
 - If the project is too large for a single spec, help the user decompose into sub-projects: what are the independent pieces, how do they relate, what order should they be built? Then brainstorm the first sub-project through the normal design flow. Each sub-project gets its own spec → plan → implementation cycle.
 - For appropriately-scoped projects, ask questions one at a time to refine the idea
