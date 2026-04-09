@@ -123,6 +123,21 @@ Implementer subagents report one of four statuses. Handle each appropriately:
 - `./spec-reviewer-prompt.md` - Dispatch spec compliance reviewer subagent
 - `./code-quality-reviewer-prompt.md` - Dispatch code quality reviewer subagent
 
+### gstack-browse for UI tasks (optional)
+
+If `gstack-browse` appears in the available skill list AND the task modifies frontend files (e.g., `apps/web/`, `src/components/`, `src/pages/`):
+
+Include in the implementer subagent prompt:
+> "For visual verification, `gstack-browse` is available. Use it to:
+> 1. Navigate to the affected page
+> 2. Take a snapshot before your change
+> 3. Implement the change
+> 4. Take a snapshot after
+> 5. Verify no visual regressions
+> Include screenshot evidence in your completion report."
+
+**Fallback** (if gstack not available): No change to subagent dispatch. Implementer relies on tests + type-check for verification.
+
 ## Example Workflow
 
 ```
