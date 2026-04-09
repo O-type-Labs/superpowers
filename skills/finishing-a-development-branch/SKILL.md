@@ -65,6 +65,25 @@ Which option?
 
 ### Step 4: Execute Choice
 
+#### gstack-ship (recommended — if `gstack-ship` appears in the available skill list)
+
+> "gstack-ship is available for the full release workflow:
+> tests → diff review → version bump → changelog → PR creation.
+>
+> A) Run gstack-ship (recommended — handles everything)
+> B) Manual options (merge, PR, keep, discard)"
+
+If A: invoke `gstack-ship`. After it completes (PR created), offer:
+
+> "PR created. Want to land and deploy?
+>
+> A) Run gstack-land-and-deploy (merge → CI wait → canary monitoring)
+> B) I'll handle deployment manually"
+
+If A: invoke `gstack-land-and-deploy`.
+
+If B at either prompt, or if gstack not available: fall through to the manual options below.
+
 #### Option 1: Merge Locally
 
 ```bash
