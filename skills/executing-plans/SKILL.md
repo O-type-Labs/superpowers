@@ -29,12 +29,22 @@ For each task:
 3. Run verifications as specified
 4. Mark as completed
 
-### Step 3: Complete Development
+### Step 3: Ship Gate
 
 After all tasks complete and verified:
-- Announce: "I'm using the finishing-a-development-branch skill to complete this work."
+1. **Invoke `ship-gate`** — full pre-merge verification (spec compliance, smoke tests, CI watch, confidence scoring)
+2. Only proceed to Step 4 after ship-gate passes (confidence >= threshold)
+
+### Step 4: Complete Development
+
+After ship-gate passes:
 - **REQUIRED SUB-SKILL:** Use superpowers:finishing-a-development-branch
 - Follow that skill to verify tests, present options, execute choice
+
+### Step 5: Release Report
+
+After merge:
+- **Invoke `release-report`** — generates 3-level visual summary, copies to ~/Downloads
 
 ## When to Stop and Ask for Help
 
@@ -67,4 +77,6 @@ After all tasks complete and verified:
 **Required workflow skills:**
 - **superpowers:using-git-worktrees** - REQUIRED: Set up isolated workspace before starting
 - **superpowers:writing-plans** - Creates the plan this skill executes
-- **superpowers:finishing-a-development-branch** - Complete development after all tasks
+- **ship-gate** - REQUIRED: Pre-merge verification before finishing
+- **superpowers:finishing-a-development-branch** - Complete development after ship-gate passes
+- **release-report** - Post-merge summary generation

@@ -162,9 +162,17 @@ If A: invoke `gstack-plan-eng-review` on the implementation plan. Incorporate fi
 
 **Fallback** (if gstack not available): Skip. Present plan to user directly.
 
+## Stress Test (mandatory for non-trivial plans)
+
+After self-review and optional eng-review, invoke `stress-test-plan` to adversarially attack the plan section by section. This is NOT optional for plans with 3+ tasks.
+
+**REQUIRED SKILL:** Invoke `stress-test-plan`. It runs 8 attack vectors per section (edge cases, error handling, race conditions, wrong assumptions, security, performance, integration mismatches, missing rollback) and presents issues with multiple fix options. Apply chosen fixes to the plan before execution.
+
+For trivial plans (1-2 tasks, single file), skip and note "stress test skipped (trivial plan)."
+
 ## Execution Handoff
 
-After saving the plan, offer execution choice:
+After saving the plan and completing the stress test, offer execution choice:
 
 **"Plan complete and saved to `docs/superpowers/plans/<filename>.md`. Two execution options:**
 

@@ -277,13 +277,25 @@ Done!
 - Dispatch fix subagent with specific instructions
 - Don't try to fix manually (context pollution)
 
+## After All Tasks Complete
+
+When all tasks are done and the final code reviewer approves:
+
+1. **Invoke `ship-gate`** — full pre-merge verification pipeline (spec compliance, smoke tests, CI watch, confidence scoring). This runs BEFORE finishing-a-development-branch.
+2. Only after ship-gate passes (confidence >= threshold), invoke `superpowers:finishing-a-development-branch`.
+3. After merge, invoke `release-report` to generate the 3-level visual summary.
+
+**Pipeline: all tasks done → ship-gate → finishing-branch → release-report**
+
 ## Integration
 
 **Required workflow skills:**
 - **superpowers:using-git-worktrees** - REQUIRED: Set up isolated workspace before starting
 - **superpowers:writing-plans** - Creates the plan this skill executes
 - **superpowers:requesting-code-review** - Code review template for reviewer subagents
-- **superpowers:finishing-a-development-branch** - Complete development after all tasks
+- **ship-gate** - REQUIRED: Pre-merge verification before finishing
+- **superpowers:finishing-a-development-branch** - Complete development after ship-gate passes
+- **release-report** - Post-merge summary generation
 
 **Subagents should use:**
 - **superpowers:test-driven-development** - Subagents follow TDD for each task

@@ -209,11 +209,28 @@ git worktree remove <worktree-path>
 - Get typed confirmation for Option 4
 - Clean up worktree for Options 1 & 4 only
 
+## After Merge: Release Report
+
+After a successful merge (Option 1 or Option 2 that gets merged), invoke `release-report`:
+
+1. **REQUIRED SKILL:** Invoke `release-report`
+2. It generates a 3-level visual summary (executive → architecture → file detail)
+3. Copies the report to ~/Downloads for sharing
+4. This is the final step of the pipeline
+
+**Skip release-report** only for Option 3 (keep as-is) and Option 4 (discard).
+
 ## Integration
 
 **Called by:**
-- **subagent-driven-development** (Step 7) - After all tasks complete
-- **executing-plans** (Step 5) - After all batches complete
+- **subagent-driven-development** - After ship-gate passes
+- **executing-plans** - After ship-gate passes
+
+**Requires before this skill:**
+- **ship-gate** - Must pass before this skill runs (pre-merge verification)
+
+**Invokes after merge:**
+- **release-report** - 3-level visual summary + Downloads export
 
 **Pairs with:**
 - **using-git-worktrees** - Cleans up worktree created by that skill
