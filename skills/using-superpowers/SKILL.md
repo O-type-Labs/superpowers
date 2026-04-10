@@ -104,11 +104,22 @@ These thoughts mean STOP—you're rationalizing:
 
 When multiple skills could apply, use this order:
 
-1. **Process skills first** (brainstorming, debugging) - these determine HOW to approach the task
-2. **Implementation skills second** (frontend-design, mcp-builder) - these guide execution
+1. **superpowers skills ALWAYS first.** If both a superpowers skill and a gstack skill match the task, invoke the superpowers skill. gstack tools are integrated INTO superpowers skills and get called at the right pipeline stage automatically. Never invoke gstack-ship, gstack-investigate, gstack-review, or gstack-office-hours directly when a superpowers equivalent exists.
+2. **Process skills before implementation skills** (brainstorming, debugging) - these determine HOW to approach the task
+3. **gstack-only skills** (no superpowers equivalent) can be invoked directly: gstack-qa, gstack-design-*, gstack-cso, gstack-retro, gstack-benchmark, gstack-checkpoint, gstack-health, gstack-canary
+
+**Mapping (use left column, never right column directly):**
+
+| Task | Invoke this | NOT this |
+|---|---|---|
+| Build something new | superpowers:brainstorming | gstack-office-hours |
+| Debug a bug | superpowers:systematic-debugging | gstack-investigate |
+| Ship / merge / PR | superpowers:finishing-a-development-branch | gstack-ship |
+| Code review | superpowers:requesting-code-review | gstack-review |
+| Plan review | superpowers:writing-plans → offers gstack plan reviews | gstack-plan-eng-review directly |
 
 "Let's build X" → brainstorming first, then implementation skills.
-"Fix this bug" → debugging first, then domain-specific skills.
+"Fix this bug" → systematic-debugging first, then domain-specific skills.
 
 ## Skill Types
 
