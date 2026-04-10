@@ -26,9 +26,162 @@ Thanks!
 
 ## Installation
 
-**Note:** Installation differs by platform. Claude Code or Cursor have built-in plugin marketplaces. Codex and OpenCode require manual setup.
+**Note:** Installation differs by platform. There are two versions of superpowers:
 
-### Claude Code Official Marketplace
+- **Upstream (obra/superpowers)** -- the original, marketplace-installable version
+- **O-type-Labs fork** -- extended with gstack integration, research-context, ship-gate, and release-report (this repo)
+
+### O-type-Labs Fork (recommended -- includes gstack integration)
+
+This fork adds 3 new skills and 15 gstack integration points to the superpowers pipeline. When you brainstorm, it runs gstack plan reviews. When you debug, it uses gstack's headless browser. When you ship, it delegates to gstack's release automation. Everything is conditional -- if gstack isn't installed, superpowers works normally.
+
+**Extra skills in this fork:**
+- **research-context** -- 10-dimension context gathering with visual gap dashboard, gates on 80% coverage before brainstorming
+- **ship-gate** -- full pre-merge verification pipeline: spec compliance, smoke tests, CI watch, confidence scoring, fix loop
+- **release-report** -- 3-level visual summary (executive/architecture/file-detail) exported to ~/Downloads after merge
+
+#### Step 1: Clone and point Claude Code at the fork
+
+```bash
+git clone https://github.com/O-type-Labs/superpowers.git ~/Desktop/ai/superpowers
+```
+
+Then tell Claude Code to use it. Open `~/.claude/plugins/installed_plugins.json` and set (or add) the superpowers entry:
+
+```json
+{
+  "version": 2,
+  "plugins": {
+    "superpowers@claude-plugins-official": [
+      {
+        "scope": "user",
+        "installPath": "/Users/<your-username>/Desktop/ai/superpowers",
+        "version": "5.0.7",
+        "installedAt": "2026-01-01T00:00:00.000Z",
+        "lastUpdated": "2026-01-01T00:00:00.000Z",
+        "gitCommitSha": ""
+      }
+    ]
+  }
+}
+```
+
+Replace `<your-username>` with your macOS username. The path must be absolute.
+
+If you already have superpowers installed from the marketplace, just change the `installPath` -- all other fields can stay.
+
+**Restart Claude Code** (quit and reopen). The next session loads from the local clone.
+
+#### Step 2: Install gstack (auto or manual)
+
+gstack auto-installs on your first session after Step 1 (the session-start hook clones it). But if you want it immediately, or the auto-install was slow, install manually:
+
+**Prerequisites:**
+- [Bun](https://bun.sh/) v1.0+ (required for gstack's headless browser daemon)
+- [Git](https://git-scm.com/)
+- macOS, Linux, or Windows with Git Bash
+
+**Install Bun first (if you don't have it):**
+
+```bash
+curl -fsSL https://bun.sh/install | bash
+```
+
+After install, **restart your terminal** (or run `source ~/.zshrc`) so `bun` is on your PATH. Verify:
+
+```bash
+bun --version    # should print 1.x.x
+```
+
+**macOS troubleshooting:** If `bun` installs but commands hang or the gstack setup takes forever:
+
+1. Make sure you're on a recent macOS (13+). Older versions have issues with Bun's binary.
+2. If `bun install` hangs, try:
+   ```bash
+   # Clear Bun's cache
+   rm -rf ~/.bun/install/cache
+   
+   # Retry
+   cd ~/.claude/skills/gstack && bun install
+   ```
+3. If gstack's `./setup` script hangs during the Bun compile step (`bun build --compile`), it's building the browse daemon binary (~58MB). This is a one-time operation. On M1/M2/M3 Macs it takes 30-60 seconds. On Intel Macs or slow connections it can take 2-3 minutes. Let it finish.
+4. If you see `error: could not resolve "..."` during setup, your Bun cache may be stale:
+   ```bash
+   bun pm cache rm
+   cd ~/.claude/skills/gstack && ./setup
+   ```
+
+**Install gstack:**
+
+```bash
+git clone --single-branch --depth 1 https://github.com/garrytan/gstack.git ~/.claude/skills/gstack
+cd ~/.claude/skills/gstack && ./setup
+```
+
+The `./setup` script:
+1. Installs npm dependencies via Bun
+2. Compiles the headless browser daemon (`bun build --compile` -- the slow part, ~30-60s)
+3. Sets up configuration at `~/.gstack/`
+4. Verifies everything works
+
+**Verify gstack installed:**
+
+```bash
+ls ~/.claude/skills/gstack/bin/gstack-*    # should list several binaries
+```
+
+#### Step 3: Install Codex CLI (optional, for adversarial code review)
+
+The `requesting-code-review` skill can invoke Codex for an independent second opinion from GPT. This is optional -- skip if you don't have a ChatGPT Plus/Pro subscription.
+
+```bash
+npm install -g @openai/codex
+codex login    # sign in with your ChatGPT account
+```
+
+#### Step 4: Verify the full stack
+
+Start a new Claude Code session. You should see all three frameworks in the skill list:
+
+```
+superpowers:brainstorming        -- from your local clone
+superpowers:research-context     -- new in this fork
+superpowers:ship-gate            -- new in this fork
+superpowers:release-report       -- new in this fork
+gstack-health                    -- auto-installed or manually installed
+gstack-browse                    -- from gstack
+gstack-ship                      -- from gstack
+... (37 gstack skills total)
+```
+
+Type `/brainstorming` on any task. It should:
+1. Start with research-context (step 0) -- gap dashboard appears
+2. Run `gstack-health` during autonomous scan -- composite score shown
+3. After design approval, offer gstack plan reviews (CEO/eng/design/DX)
+
+If all three fire, the integration is working.
+
+#### Updating
+
+To update this fork:
+```bash
+cd ~/Desktop/ai/superpowers && git pull
+```
+
+To update gstack:
+```bash
+cd ~/.claude/skills/gstack && git pull && ./setup
+```
+
+Superpowers and gstack update independently. Neither overwrites the other.
+
+---
+
+### Upstream Installation (obra/superpowers -- original, no gstack)
+
+If you don't want the gstack integration and prefer the vanilla superpowers:
+
+#### Claude Code Official Marketplace
 
 Superpowers is available via the [official Claude plugin marketplace](https://claude.com/plugins/superpowers)
 
