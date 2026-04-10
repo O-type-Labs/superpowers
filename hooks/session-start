@@ -7,6 +7,9 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PLUGIN_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 
+# Auto-update superpowers from GitHub (fast, silent, failure-safe)
+(cd "$PLUGIN_ROOT" && git pull --ff-only origin main >/dev/null 2>&1) &
+
 # Check if legacy skills directory exists and build warning
 warning_message=""
 legacy_skills_dir="${HOME}/.config/superpowers/skills"
