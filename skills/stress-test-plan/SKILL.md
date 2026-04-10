@@ -243,10 +243,59 @@ After all sections are audited:
   Missing rollback:        ✓ checked all sections
 
 ══════════════════════════════════════════════════════════════
- Re-run specific sections? Tell me which numbers.
- Otherwise: plan is hardened, proceed to execution.
+```
+
+## Step 5: Codex Adversarial Challenge (optional)
+
+After the audit summary, if `gstack-codex` appears in the available skill list:
+
+```
+ CODEX ADVERSARIAL CHALLENGE
+ ═══════════════════════════
+ Claude just audited this plan using 8 attack vectors. But Claude
+ reviewing Claude's plan has a blind spot: same model, same training
+ distribution, same classes of issues it tends to miss.
+
+ Codex uses GPT — different model, different failure modes. It will
+ try to break the plan independently.
+
+ A) Run Codex challenge on the full plan (recommended)
+ B) Run Codex challenge on CRITICAL/HIGH sections only
+ C) Skip
+```
+
+**If A or B:**
+1. Extract the plan text (full or filtered sections)
+2. Invoke `gstack-codex` in challenge mode with this prompt context:
+   > "This is an implementation plan. Your job is to break it. Find edge cases, wrong assumptions, race conditions, security holes, performance traps, and integration mismatches that the plan doesn't handle. Be adversarial. For each issue, explain what breaks and suggest a fix."
+3. Collect Codex's findings
+4. Deduplicate against issues Claude already found (same issue from both models = high confidence it's real)
+5. Present NEW issues (ones Claude missed) in the same format as Step 3:
+
+```
+══════════════════════════════════════════════════════════════
+ CODEX FOUND 2 NEW ISSUES (Claude missed these)
+══════════════════════════════════════════════════════════════
+
+ ISSUE C.1 [RACE CONDITION] — Concurrent portfolio reads during write
+ ─────────────────────────────────────────────────────────────
+ [Codex's finding in the standard issue format with fix options]
+
+ ISSUE C.2 [EDGE CASE] — Deleted assets still counted in summary
+ ─────────────────────────────────────────────────────────────
+ [Codex's finding with fix options]
+
+══════════════════════════════════════════════════════════════
+ CONFIRMED BY BOTH MODELS (high confidence):
+  - Issue 3.4 (auth bypass) — Claude found it, Codex independently confirmed
 ══════════════════════════════════════════════════════════════
 ```
+
+Wait for user to pick fixes for new issues. Apply to plan.
+
+**If C (skip):** Proceed to re-run offer.
+
+**Fallback** (if gstack-codex not available): Skip entirely. Note "Codex challenge: SKIPPED (not available)" in the audit summary.
 
 ## Re-run Capability
 
