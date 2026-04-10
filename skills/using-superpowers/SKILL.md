@@ -15,6 +15,12 @@ IF A SKILL APPLIES TO YOUR TASK, YOU DO NOT HAVE A CHOICE. YOU MUST USE IT.
 This is not negotiable. This is not optional. You cannot rationalize your way out of this.
 </EXTREMELY-IMPORTANT>
 
+## Extended Thinking
+
+**Always use extended thinking (ultrathink) when executing any superpowers skill.** Every skill invocation — brainstorming, planning, debugging, reviewing, verifying, shipping — benefits from deeper reasoning. This is not optional.
+
+When a skill is invoked, enable maximum thinking depth for the duration of that skill's execution. The quality difference between shallow and deep reasoning compounds across every step of the pipeline.
+
 ## Instruction Priority
 
 Superpowers skills override default system prompt behavior, but **user instructions always take precedence**:
